@@ -1,15 +1,36 @@
-''' Slip256 Cipher'''
+''' Slip256 Card Cipher'''
 ''' by KryptoMagick (Karl Zander) '''
-from random import shuffle
+from os import urandom
 
 class SLIP256:
     def __init__(self):
         self.deck = list(range(256))
         
-    def gen_rand_decks(self):
-    	shuffle(self.deck)
+    def gen_rand_key(self, keylen=32):
+    	    return urandom(keylen)
+    	    
+    def gen_rand_nonce(self, nonce=16):
+    	    return urandom(keylen)
+    	    
+    def ksa(self, key, nonce):
+         for i in range(len(key)):
+             self.deck.append(self.deck.pop(0))
+             self.deck.append(self.deck.pop(0))
+         
+             posA = self.deck[0]
+             posB = key[i]
+             self.deck[posA], self.deck[posB] = self.deck[posB], self.deck[posA]
+             
+         for i in range(len(nonce)):
+             self.deck.append(self.deck.pop(0))
+             self.deck.append(self.deck.pop(0))
+         
+             posA = self.deck[0]
+             posB = nonce[i]
+             self.deck[posA], self.deck[posB] = self.deck[posB], self.deck[posA]
+         
     	
-    def ksa(self):
+    def update(self):
          self.deck.append(self.deck.pop(0))
          self.deck.append(self.deck.pop(0))
          
@@ -18,28 +39,30 @@ class SLIP256:
          self.deck[posA], self.deck[posB] = self.deck[posB], self.deck[posA]
          return self.deck[self.deck[posA]] % 256
          
-    def encrypt_letter(self, letter):
-        num = ord(letter)
-        key = self.ksa()
+    def encrypt_byte(self, b):
+        num = ord(b)
+        key = self.update()
         num = (num ^ key)
         return chr(num)
         
-    def decrypt_letter(self, letter):
-        num = ord(letter)
-        key = self.ksa()
+    def decrypt_byte(self, b):
+        num = ord(b)
+        key = self.update()
         num = (num ^ key)
         return chr(num)
 
-    def encrypt(self, letters):
+    def encrypt(self, msg, key, nonce):
+        self.ksa(key, nonce)
         ctxt = []
-        for x in range(len(letters)):
-            letter = self.encrypt_letter(letters[x])
-            ctxt.append(letter)
+        for x in range(len(msg)):
+            b = self.encrypt_byte(msg[x])
+            ctxt.append(b)
         return "".join(ctxt)
 
-    def decrypt(self, letters):
+    def decrypt(self, ctxt, key, nonce):
+        self.ksa(key, nonce)
         ptxt = []
-        for x in range(len(letters)):
-            letter = self.decrypt_letter(letters[x])
-            ptxt.append(letter)
+        for x in range(len(ctxt)):
+            b = self.decrypt_byte(ctxt[x])
+            ptxt.append(b)
         return "".join(ptxt)
