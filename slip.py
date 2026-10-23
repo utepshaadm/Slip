@@ -12,13 +12,12 @@ class SLIP:
     def ksa(self):
          self.deck.append(self.deck.pop(0))
          self.deck.append(self.deck.pop(0))
-         #self.deck.append(self.deck.pop(0))
-         #self.deck.append(self.deck.pop(0))
+         
          
          posA = self.deck[0]
          posB = self.deck[1]
-         self.deck[posA], self.deck[posB] = self.deck[posB], self.deck[posA]
-         return self.deck[self.deck[posA]] % 26
+         self.deck[0], self.deck[posB] = self.deck[posB], self.deck[0]
+         return self.deck[self.deck[self.deck[posA]]] % 26
          
     def encrypt_letter(self, letter):
         num = ord(letter) - 65
