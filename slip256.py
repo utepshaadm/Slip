@@ -1,43 +1,39 @@
-''' Slip256 Card Cipher'''
+''' Slip256 Stream Cipher'''
 ''' by KryptoMagick (Karl Zander) '''
 from os import urandom
 
 class SLIP256:
     def __init__(self):
-        self.deck = list(range(256))
+        self.deck = list(range(512))
         
     def gen_rand_key(self, keylen=32):
-    	    return urandom(keylen)
-    	    
-    def gen_rand_nonce(self, nonce=16):
-    	    return urandom(keylen)
-    	    
+        return urandom(keylen)
+        
+    def gen_rand_nonce(self, nonce_len=16):
+        return urandom(nonce_len)
+        
     def ksa(self, key, nonce):
-         for i in range(len(key)):
-             self.deck.append(self.deck.pop(0))
-             self.deck.append(self.deck.pop(0))
-         
-             posA = self.deck[0]
-             posB = key[i]
-             self.deck[0], self.deck[posB] = self.deck[posB], self.deck[0]
-             
-         for i in range(len(nonce)):
-             self.deck.append(self.deck.pop(0))
-             self.deck.append(self.deck.pop(0))
-         
-             posA = self.deck[0]
-             posB = nonce[i]
-             self.deck[0], self.deck[posB] = self.deck[posB], self.deck[0]
-         
-    	
+        for i in range(512):
+            self.deck.append(self.deck.pop(0))
+            self.deck.append(self.deck.pop(0))
+            posA = self.deck[0]
+            posB = key[i % len(key)]
+            self.deck[0], self.deck[posB] = self.deck[posB], self.deck[0]
+            
+        for i in range(512):
+            self.deck.append(self.deck.pop(0))
+            self.deck.append(self.deck.pop(0))
+            posA = self.deck[0]
+            posB = nonce[i % len(nonce)]
+            self.deck[0], self.deck[posB] = self.deck[posB], self.deck[0]
+    
     def update(self):
-         self.deck.append(self.deck.pop(0))
-         self.deck.append(self.deck.pop(0))
-         
-         posA = self.deck[0]
-         posB = self.deck[1]
-         self.deck[0], self.deck[posB] = self.deck[posB], self.deck[0]
-         return self.deck[self.deck[posA]]
+        self.deck.append(self.deck.pop(0))
+        self.deck.append(self.deck.pop(0))
+        posA = self.deck[0]
+        posB = self.deck[1]
+        self.deck[0], self.deck[posB] = self.deck[posB], self.deck[0]
+        return self.deck[self.deck[self.deck[posA]]] % 256
          
     def encrypt_byte(self, b):
         num = ord(b)
