@@ -4,7 +4,7 @@ from os import urandom
 
 class SLIP256:
     def __init__(self):
-        self.deck = list(range(512))
+        self.deck = list(range(256))
         
     def gen_rand_key(self, keylen=32):
         return urandom(keylen)
@@ -13,7 +13,7 @@ class SLIP256:
         return urandom(nonce_len)
         
     def ksa(self, key, nonce):
-        for i in range(512):
+        for i in range(256):
             self.deck.append(self.deck.pop(0))
             self.deck.append(self.deck.pop(0))
             self.deck.append(self.deck.pop(0))
@@ -21,7 +21,7 @@ class SLIP256:
             posB = key[i % len(key)]
             self.deck[0], self.deck[posB] = self.deck[posB], self.deck[0]
             
-        for i in range(512):
+        for i in range(256):
             self.deck.append(self.deck.pop(0))
             self.deck.append(self.deck.pop(0))
             posA = self.deck[0]
@@ -35,7 +35,7 @@ class SLIP256:
         posA = self.deck[0]
         posB = self.deck[1]
         self.deck[0], self.deck[posB] = self.deck[posB], self.deck[0]
-        return self.deck[self.deck[self.deck[posA]]] % 256
+        return self.deck[self.deck[self.deck[posA]]] %
          
     def encrypt_byte(self, b):
         num = ord(b)
