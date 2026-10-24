@@ -16,6 +16,7 @@ class SLIP256:
         for i in range(512):
             self.deck.append(self.deck.pop(0))
             self.deck.append(self.deck.pop(0))
+            self.deck.append(self.deck.pop(0))
             posA = self.deck[0]
             posB = key[i % len(key)]
             self.deck[0], self.deck[posB] = self.deck[posB], self.deck[0]
@@ -28,6 +29,7 @@ class SLIP256:
             self.deck[0], self.deck[posB] = self.deck[posB], self.deck[0]
     
     def update(self):
+        self.deck.append(self.deck.pop(0))
         self.deck.append(self.deck.pop(0))
         self.deck.append(self.deck.pop(0))
         posA = self.deck[0]
