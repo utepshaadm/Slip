@@ -32,10 +32,9 @@ class SLIP256:
         self.deck.append(self.deck.pop(0))
         self.deck.append(self.deck.pop(0))
         self.deck.append(self.deck.pop(0))
-        posA = self.deck[0]
-        posB = self.deck[1]
-        self.deck[0], self.deck[posB] = self.deck[posB], self.deck[0]
-        return self.deck[self.deck[self.deck[posA]]] %
+        p = self.deck[1]
+        self.deck[0], self.deck[p] = self.deck[p], self.deck[0]
+        return self.deck[self.deck[self.deck[pos]]]
          
     def encrypt_byte(self, b):
         num = ord(b)
