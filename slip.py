@@ -5,6 +5,7 @@ from random import shuffle
 class SLIP:
     def __init__(self):
         self.deck = list(range(52))
+        self.c = 0
         
     def gen_rand_decks(self):
     	shuffle(self.deck)
@@ -12,9 +13,7 @@ class SLIP:
     def ksa(self):
          self.deck.append(self.deck.pop(0))
          self.deck.append(self.deck.pop(0))
-         self.deck.append(self.deck.pop(0))
-        
-         p = self.deck[1]
+         p = self.deck[self.deck[1]]
          self.deck[0], self.deck[p] = self.deck[p], self.deck[0]
          return self.deck[self.deck[self.deck[p]]] % 26
          
