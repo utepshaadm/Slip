@@ -26,7 +26,7 @@ class SLIP:
     def decrypt_letter(self, letter):
         num = ord(letter) - 65
         key = self.ksa()
-        num = (num - key)
+        num = (num - key) % 26
         return chr(num + 65)
 
     def encrypt(self, letters):
@@ -41,4 +41,4 @@ class SLIP:
         for x in range(len(letters)):
             letter = self.decrypt_letter(letters[x])
             ptxt.append(letter)
-        return "".join(ptxt)
+        return "".join(ptxt
