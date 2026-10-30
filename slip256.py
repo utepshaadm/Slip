@@ -16,23 +16,22 @@ class SLIP256:
         for i in range(256):
             self.deck.append(self.deck.pop(0))
             self.deck.append(self.deck.pop(0))
-            posA = self.deck[i]
+            posA = self.deck[0]
             posB = key[i % len(key)]
-            self.deck[i], self.deck[posB] = self.deck[posB], self.deck[i]
+            self.deck[0], self.deck[posB] = self.deck[posB], self.deck[0]
             
         for i in range(256):
             self.deck.append(self.deck.pop(0))
             self.deck.append(self.deck.pop(0))
-            posA = self.deck[i]
+            posA = self.deck[0]
             posB = nonce[i % len(nonce)]
-            self.deck[i], self.deck[posB] = self.deck[posB], self.deck[i]
+            self.deck[0], self.deck[posB] = self.deck[posB], self.deck[0]
     
     def update(self):
         self.deck.append(self.deck.pop(0))
         self.deck.append(self.deck.pop(0))
         p = self.deck[self.deck[1]]
         self.deck[0], self.deck[p] = self.deck[p], self.deck[0]
-        #self.c = (self.c + 1) % 256
         return self.deck[self.deck[self.deck[p]]]
          
     def encrypt_byte(self, b):
