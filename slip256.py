@@ -5,6 +5,7 @@ from os import urandom
 class SLIP256:
     def __init__(self):
         self.deck = list(range(256))
+        self.c = 0
         
     def gen_rand_key(self, keylen=32):
         return urandom(keylen)
@@ -18,21 +19,23 @@ class SLIP256:
             self.deck.append(self.deck.pop(0))
             posA = self.deck[0]
             posB = key[i % len(key)]
-            self.deck[0], self.deck[posB] = self.deck[posB], self.deck[0]
+            self.deck[posA], self.deck[posB] = self.deck[posB], self.deck[posA]
             
         for i in range(256):
             self.deck.append(self.deck.pop(0))
             self.deck.append(self.deck.pop(0))
             posA = self.deck[0]
             posB = nonce[i % len(nonce)]
-            self.deck[0], self.deck[posB] = self.deck[posB], self.deck[0]
+            self.deck[posA], self.deck[posB] = self.deck[posB], self.deck[posA]
     
     def update(self):
         self.deck.append(self.deck.pop(0))
         self.deck.append(self.deck.pop(0))
         p = self.deck[self.deck[1]]
-        self.deck[0], self.deck[p] = self.deck[p], self.deck[0]
-        return self.deck[self.deck[self.deck[p]]]
+        self.deck[self.c], self.deck[p] = self.deck[p], self.deck[self.c]
+        self.c = (self.c + 1) % 256
+        o = self.deck[self.deck[self.deck[p]]]
+        return o
          
     def encrypt_byte(self, b):
         num = ord(b)
