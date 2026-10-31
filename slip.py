@@ -3,30 +3,38 @@
 from random import shuffle
 
 class SLIP:
-    def __init__(self):
-        self.deck = list(range(52))
+    def __init__(self, key=None):
+        if key is not None:
+        	self.deck = list(key)
+        else:
+            self.deck = list(range(52))
+        self.p = self.deck[0]
+        self.q = self.deck[1]
         self.c = 0
         
     def gen_rand_decks(self):
     	shuffle(self.deck)
     	
-    def ksa(self):
-         self.deck.append(self.deck.pop(0))
-         self.deck.append(self.deck.pop(0))
-         p = self.deck[self.deck[1]]
-         self.deck[self.c], self.deck[p] = self.deck[p], self.deck[self.c]0
-         self.c = (self.c + 1) % 26
-         return self.deck[self.deck[self.deck[p]]] % 26
+    def update(self):
+        self.deck.append(self.deck.pop(0))
+        self.deck.append(self.deck.pop(0))
+        self.p = self.deck[self.deck[self.p]]
+        self.q = self.deck[self.deck[self.deck[self.q]]]
+        self.deck[self.q], self.deck[self.c] = self.deck[self.c], self.deck[self.q]
+        o = self.deck[self.deck[self.deck[self.p]]] % 26
+        self.deck[self.p], self.deck[self.q] = self.deck[self.q], self.deck[self.p]
+        self.c = (self.c + 1) % 52
+        return o
          
     def encrypt_letter(self, letter):
         num = ord(letter) - 65
-        key = self.ksa()
+        key = self.update()
         num = (num + key) % 26
         return chr(num + 65)
         
     def decrypt_letter(self, letter):
         num = ord(letter) - 65
-        key = self.ksa()
+        key = self.update()
         num = (num - key) % 26
         return chr(num + 65)
 
