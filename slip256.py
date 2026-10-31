@@ -32,7 +32,9 @@ class SLIP256:
         self.deck.append(self.deck.pop(0))
         self.deck.append(self.deck.pop(0))
         p = self.deck[self.deck[1]]
-        self.deck[self.c], self.deck[p] = self.deck[p], self.deck[self.c]
+        q = self.deck[0]
+        self.deck[self.c], self.deck[q] = self.deck[q], self.deck[self.c]
+        self.deck[0], self.deck[p] = self.deck[p], self.deck[0]
         self.c = (self.c + 1) % 256
         o = self.deck[self.deck[self.deck[p]]]
         return o
@@ -63,4 +65,4 @@ class SLIP256:
         for x in range(len(ctxt)):
             b = self.decrypt_byte(ctxt[x])
             ptxt.append(b)
-        return "".join(ptxt)
+        return "".join(ptxt)ll
