@@ -5,6 +5,7 @@ from random import shuffle
 class SLIP:
     def __init__(self):
         self.deck = list(range(52))
+        self.c = 0
         
     def gen_rand_decks(self):
     	shuffle(self.deck)
@@ -13,7 +14,8 @@ class SLIP:
          self.deck.append(self.deck.pop(0))
          self.deck.append(self.deck.pop(0))
          p = self.deck[self.deck[1]]
-         self.deck[0], self.deck[p] = self.deck[p], self.deck[0]
+         self.deck[self.c], self.deck[p] = self.deck[p], self.deck[self.c]0
+         self.c = (self.c + 1) % 26
          return self.deck[self.deck[self.deck[p]]] % 26
          
     def encrypt_letter(self, letter):
@@ -40,4 +42,4 @@ class SLIP:
         for x in range(len(letters)):
             letter = self.decrypt_letter(letters[x])
             ptxt.append(letter)
-        return "".join(ptxt
+        return "".join(ptxt)
