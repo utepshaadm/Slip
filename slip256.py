@@ -27,16 +27,18 @@ class SLIP256:
             posA = self.deck[0]
             posB = nonce[i % len(nonce)]
             self.deck[posA], self.deck[posB] = self.deck[posB], self.deck[posA]
+        self.p = self.deck[0]
+        self.q = self.deck[1]
     
     def update(self):
         self.deck.append(self.deck.pop(0))
         self.deck.append(self.deck.pop(0))
-        p = self.deck[self.deck[1]]
-        q = self.deck[0]
-        self.deck[self.c], self.deck[q] = self.deck[q], self.deck[self.c]
-        self.deck[0], self.deck[p] = self.deck[p], self.deck[0]
+        self.p = self.deck[self.deck[self.p]]
+        self.q = self.deck[self.deck[self.deck[self.q]]]
+        self.deck[self.q], self.deck[self.c] = self.deck[self.c], self.deck[self.q]
+        o = self.deck[self.deck[self.deck[self.p]]]
+        self.deck[self.p], self.deck[self.q] = self.deck[self.q], self.deck[self.p]
         self.c = (self.c + 1) % 256
-        o = self.deck[self.deck[self.deck[p]]]
         return o
          
     def encrypt_byte(self, b):
@@ -65,4 +67,4 @@ class SLIP256:
         for x in range(len(ctxt)):
             b = self.decrypt_byte(ctxt[x])
             ptxt.append(b)
-        return "".join(ptxt)ll
+        return "".join(ptxt)
